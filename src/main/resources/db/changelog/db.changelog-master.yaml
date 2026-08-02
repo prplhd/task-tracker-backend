@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users-table
+      author: prplhd
+      changes:
+        - sqlFile:
+            path: db/changelog/changes/001-create-users-table.sql
+
+  - changeSet:
+      id: 002-create-tasks-table
+      author: prplhd
+      changes:
+        - sqlFile:
+            path: db/changelog/changes/002-create-tasks-table.sql
