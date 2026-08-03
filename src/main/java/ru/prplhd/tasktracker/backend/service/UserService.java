@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.prplhd.tasktracker.backend.dto.UserDto;
 import ru.prplhd.tasktracker.backend.entity.UserEntity;
+import ru.prplhd.tasktracker.backend.exception.UserAlreadyExistsException;
 import ru.prplhd.tasktracker.backend.repository.UserRepository;
 
 @Service
@@ -18,11 +19,15 @@ public class UserService {
 
     @Transactional
     public UserDto register(String email, String password) {
-        String passwordHash = passwordEncoder.encode(password);
 
+        if (userRepository.existsByEmailIgnoreCase(email)) {
+            throw new UserAlreadyExistsException("This user already exists");
+        }
+
+        String passwordHash = passwordEncoder.encode(password);
         UserEntity userEntity = new UserEntity(email, passwordHash);
 
-        UserEntity savedUser = userRepository.save(userEntity);
+        UserEntity savedUser = userRepository.saveAndFlush(userEntity);
 
         return new UserDto(savedUser.getId(), savedUser.getEmail());
     }
