@@ -4,8 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.prplhd.tasktracker.backend.entity.TaskEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
     public List<TaskEntity> findAllByOwnerId(Long userId);
+
+    Optional<TaskEntity> findByIdAndOwner_Id(Long taskId, Long ownerId);
 }

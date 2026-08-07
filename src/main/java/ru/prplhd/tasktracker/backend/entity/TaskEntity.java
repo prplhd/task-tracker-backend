@@ -49,6 +49,18 @@ public class TaskEntity {
     @Column(name = "completed_at")
     private Instant completedAt;
 
+    public void changeTitle(String title) {
+        this.title = title;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
+    public void clearDescription() {
+        this.description = null;
+    }
+
     public void markAsCompleted(Instant completionTime) {
         if (completionTime == null) {
             throw new IllegalArgumentException("Completion time can't be null");
