@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,5 +68,16 @@ public class TaskController {
 
         return ResponseEntity.ok()
                 .body(taskDto);
+    }
+
+    @DeleteMapping("/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId,
+                                           @AuthenticationPrincipal Jwt jwt
+    ) {
+        Long userId = Long.valueOf(jwt.getSubject());
+
+        taskService.deleteTask(userId, taskId);
+
+        return ResponseEntity.noContent().build();
     }
 }

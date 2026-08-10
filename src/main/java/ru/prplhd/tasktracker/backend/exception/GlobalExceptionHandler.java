@@ -57,6 +57,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleInvalidCredentialsException(InvalidCredentialsException e) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getMessage());
 
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleTaskNotFoundException(TaskNotFoundException e) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getMessage());
+
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleUserNotFoundException(UserNotFoundException e) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(e.getMessage());
+
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDto> handleException(Exception e) {
+        log.error("Unexpected error", e);
+
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto("Internal server error. Please try again later");
+
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

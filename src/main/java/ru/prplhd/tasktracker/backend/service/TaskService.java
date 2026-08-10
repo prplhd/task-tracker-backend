@@ -24,7 +24,7 @@ public class TaskService {
     private final UserRepository userRepository;
 
     public List<TaskDto> getTasksByOwnerId(Long ownerId) {
-        List<TaskEntity> tasks = taskRepository.findAllByOwnerId(ownerId);
+        List<TaskEntity> tasks = taskRepository.findAllByOwnerIdOrderByIdDesc(ownerId);
 
         List<TaskDto> taskDtos = new ArrayList<>();
 
@@ -87,5 +87,13 @@ public class TaskService {
                 task.isCompleted(),
                 task.getCompletedAt()
         );
+    }
+
+    @Transactional
+    public void deleteTask(Long ownerId, Long taskId) {
+        TaskEntity task = taskRepository.findByIdAndOwner_Id(taskId, ownerId)
+                .orElseThrow(() -> new TaskNotFoundException("Task with id '%d' not found".formatted(taskId)));
+
+        taskRepository.delete(task);
     }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
 
-    public List<TaskEntity> findAllByOwnerId(Long userId);
-
     Optional<TaskEntity> findByIdAndOwner_Id(Long taskId, Long ownerId);
+
+    List<TaskEntity> findAllByOwnerIdOrderByIdDesc(Long ownerId);
 }
