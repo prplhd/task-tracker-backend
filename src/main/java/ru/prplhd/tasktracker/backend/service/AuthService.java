@@ -1,6 +1,7 @@
 package ru.prplhd.tasktracker.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,7 @@ import ru.prplhd.tasktracker.backend.dto.UserDto;
 import ru.prplhd.tasktracker.backend.dto.auth.RegistrationResult;
 import ru.prplhd.tasktracker.backend.dto.auth.SignInResult;
 import ru.prplhd.tasktracker.backend.entity.UserEntity;
+import ru.prplhd.tasktracker.backend.event.UserRegisteredEvent;
 import ru.prplhd.tasktracker.backend.exception.InvalidCredentialsException;
 import ru.prplhd.tasktracker.backend.repository.UserRepository;
 
@@ -15,6 +17,8 @@ import ru.prplhd.tasktracker.backend.repository.UserRepository;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AuthService {
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private final UserService userService;
     private final JwtService jwtService;
@@ -27,6 +31,8 @@ public class AuthService {
         UserDto userDto = userService.register(email, password);
 
         String accessToken = jwtService.generateAccessToken(userDto.id());
+
+        applicationEventPublisher.publishEvent(new UserRegisteredEvent(userDto.email()));
 
         return new RegistrationResult(userDto, accessToken);
     }
